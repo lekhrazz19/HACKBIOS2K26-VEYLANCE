@@ -377,7 +377,7 @@ export const HeatmapPanel: React.FC<HeatmapPanelProps> = ({ heatmap }) => {
   return (
     <div 
       ref={containerRef}
-      className="bg-slate-800/90 backdrop-blur-md rounded-2xl p-5 border border-slate-700/80 shadow-xl flex flex-col gap-4 relative overflow-hidden"
+      className="bg-slate-900/80 backdrop-blur-md rounded-2xl p-5 border border-slate-700/80 shadow-xl flex flex-col gap-4 relative overflow-hidden"
     >
       {/* Header & Controls */}
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-700/70 pb-3">

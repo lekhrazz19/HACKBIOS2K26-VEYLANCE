@@ -46,7 +46,7 @@ export const OcclusionGraph: React.FC<OcclusionGraphProps> = ({ occlusionZones }
   const hasOcclusion = values.some(v => v > 0.45);
 
   return (
-    <div className="bg-slate-800/90 backdrop-blur-md rounded-2xl p-5 border border-slate-700/80 shadow-xl flex flex-col items-center justify-between">
+    <div className="bg-slate-900/80 backdrop-blur-md rounded-2xl p-5 border border-slate-700/80 shadow-xl flex flex-col items-center justify-between">
       <div className="w-full flex justify-between items-center border-b border-slate-700/70 pb-3 mb-2">
         <div className="flex items-center gap-2">
           <div className="w-2.5 h-2.5 rounded-full bg-indigo-400 shadow-[0_0_8px_rgba(129,140,248,0.6)]" />

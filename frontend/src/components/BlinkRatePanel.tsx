@@ -51,12 +51,12 @@ export const BlinkRatePanel: React.FC<Props> = ({ telemetry, s4Signal }) => {
   else if (avg_duration_ms > 380) durLabel = "Too prolonged";
 
   return (
-    <div className="bg-slate-800 p-5 rounded-xl shadow-lg border border-slate-700 font-mono text-slate-300 flex flex-col gap-4">
-      <div className="flex justify-between items-center border-b border-slate-700 pb-2">
+    <div className="bg-slate-900/80 backdrop-blur-md p-5 rounded-2xl shadow-xl border border-slate-700/80 font-mono text-slate-300 flex flex-col gap-4">
+      <div className="flex justify-between items-center border-b border-slate-700/70 pb-2.5">
         <div className="flex items-center gap-2">
-          <span className="w-2.5 h-2.5 rounded-full bg-blue-500 animate-pulse"></span>
+          <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(6,182,212,0.6)]"></span>
           <h3 className="text-base font-bold text-slate-100 uppercase tracking-wider">
-            S4 Blink Liveness
+            S4 Eye Blink Liveness
           </h3>
           {isCalibrating && (
             <span className="text-[10px] bg-blue-500/20 text-blue-400 border border-blue-500/40 px-2 py-0.5 rounded-full font-bold">
