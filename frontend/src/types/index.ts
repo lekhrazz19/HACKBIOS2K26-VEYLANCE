@@ -72,3 +72,31 @@ export interface DashboardState {
   heatmap?: number[][];
   telemetry?: TelemetryData;
 }
+
+export type SimulationScenario = 
+  | 'baseline' 
+  | 'occlusion_warp' 
+  | 'robotic_blink' 
+  | 'seam_blur' 
+  | 'av_desync';
+
+export interface AuditLogEvent {
+  timestamp: string;
+  type: string;
+  severity: 'info' | 'warning' | 'alert' | 'critical';
+  details: string;
+  trustScore: number;
+}
+
+export interface AuditReportSummary {
+  sessionId: string;
+  startedAt: string;
+  durationSeconds: number;
+  totalFrames: number;
+  finalTrustScore: number;
+  riskLevel: RiskLevel;
+  verifiedVerdict: 'AUTHENTIC' | 'SUSPICIOUS' | 'FLAGGED_DEEPFAKE';
+  signalsSummary: Partial<Record<SignalName, { score: number; status: SignalStatus; reason: string }>>;
+  alertsCount: number;
+  events: AuditLogEvent[];
+}
