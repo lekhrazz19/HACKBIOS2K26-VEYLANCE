@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useWebSocket } from './hooks/useWebSocket';
 import { useWebcam } from './hooks/useWebcam';
+import { useAudio } from './hooks/useAudio';
 import { StatusBar } from './components/StatusBar';
 import { WebcamView } from './components/WebcamView';
 import { TrustGauge } from './components/TrustGauge';
@@ -14,8 +15,10 @@ import { SessionStats } from './components/SessionStats';
 import { BlinkRatePanel } from './components/BlinkRatePanel';
 
 function App() {
-  const { isConnected, dashboardState, sendFrame } = useWebSocket();
+  const { isConnected, dashboardState, sendFrame, setAudioGetter, sessionKey } = useWebSocket();
   
+  const { start: startAudio, stop: stopAudio, getRMS } = useAudio();
+
   const { 
     videoRef, 
     isCapturing, 
@@ -27,12 +30,23 @@ function App() {
     }
   });
 
+  useEffect(() => {
+    if (isCapturing) {
+      startAudio();
+      setAudioGetter(getRMS);
+    } else {
+      stopAudio();
+      setAudioGetter(() => null);
+    }
+  }, [isCapturing, startAudio, stopAudio, getRMS, setAudioGetter]);
+
   // Cleanup on unmount
   useEffect(() => {
     return () => {
       stopCapture();
+      stopAudio();
     };
-  }, [stopCapture]);
+  }, [stopCapture, stopAudio]);
 
   const fallbackDashboard = {
     trust_score: 100,
@@ -55,52 +69,66 @@ function App() {
       <StatusBar 
         isConnected={isConnected} 
         isCapturing={isCapturing} 
+        isAudioActive={isCapturing}
         onStart={startCapture} 
         onStop={stopCapture} 
       />
       
-      <main className="flex-1 p-6 flex flex-col gap-6 max-w-[1600px] mx-auto w-full overflow-y-auto">
-        <div className="flex flex-col lg:flex-row gap-6">
-          {/* Left Column - Webcam */}
-          <div className="flex-1 flex flex-col gap-4 min-w-0">
+      <main className="flex-1 p-6 flex flex-col gap-6 max-w-[1680px] mx-auto w-full">
+        {/* Layer 1: High-Density Telemetry Bar */}
+        <TelemetryBar 
+          telemetry={currentDashboard.telemetry} 
+          faceCount={currentDashboard.faces?.length} 
+        />
+
+        {/* Layer 2: Main Operational Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          
+          {/* Left Visual & Biometric Forensics Suite (7 of 12 columns) */}
+          <div className="lg:col-span-7 flex flex-col gap-6 min-w-0">
+            {/* Live Camera Feed with Active Target Square Box */}
             <WebcamView 
               videoRef={videoRef} 
               isCapturing={isCapturing} 
               faceDetected={currentDashboard.face_detected}
               faces={currentDashboard.faces}
+              trustScore={currentDashboard.trust_score}
+              riskLevel={currentDashboard.risk_level}
             />
+
+            {/* Forensics Layer: Anomaly Heatmap & Zone Radar */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <HeatmapPanel heatmap={currentDashboard.heatmap} />
+              <OcclusionGraph occlusionZones={currentDashboard.occlusion_zones} />
+            </div>
           </div>
 
-          {/* Right Column - Status */}
-          <div className="w-full lg:w-[400px] flex flex-col gap-4 shrink-0">
-            <TelemetryBar telemetry={currentDashboard.telemetry} faceCount={currentDashboard.faces?.length} />
+          {/* Right Analytical & Security Intelligence Suite (5 of 12 columns) */}
+          <div className="lg:col-span-5 flex flex-col gap-5 min-w-0">
+            {/* Trust Gauge & Integrity Breakdown */}
             <TrustGauge 
               trustScore={currentDashboard.trust_score} 
               riskLevel={currentDashboard.risk_level} 
               signals={currentDashboard.signals}
               faceDetected={currentDashboard.face_detected}
             />
-            <SignalCards signals={currentDashboard.signals} />
-            <BlinkRatePanel telemetry={currentDashboard.telemetry} s4Signal={currentDashboard.signals.find(s => s.signal === 'S4')} />
-            <SessionStats dashboardState={dashboardState} />
-          </div>
-        </div>
 
-        {/* Bottom Row - Heatmap and Occlusion Graph */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full">
-          {/* HeatmapPanel and OcclusionGraph go here - added by Task 3 */}
-          <div></div>
-          <div></div>
+            {/* S4 Eye Blink Dynamics & EAR Baseline Analytics */}
+            <BlinkRatePanel 
+              telemetry={currentDashboard.telemetry} 
+              s4Signal={currentDashboard.signals.find(s => s.signal === 'S4')} 
+            />
+
+            {/* Multi-Signal Verification Cards (S1-S5) */}
+            <SignalCards signals={currentDashboard.signals} />
+
+            {/* Session Verification Timeline & Audit Stats */}
+            <SessionStats dashboardState={dashboardState} sessionKey={sessionKey} />
+          </div>
         </div>
       </main>
 
-      {/* Analytics Section */}
-      <div className="p-6 flex flex-col lg:flex-row gap-6 max-w-[1600px] mx-auto w-full justify-center">
-        <HeatmapPanel heatmap={currentDashboard.heatmap} />
-        <OcclusionGraph occlusionZones={currentDashboard.occlusion_zones} />
-      </div>
-
-      {/* Overlays */}
+      {/* Security Overlays */}
       <AlertPanel alert={currentDashboard.alert} />
       <ChallengeModal challenge={currentDashboard.challenge} />
     </div>

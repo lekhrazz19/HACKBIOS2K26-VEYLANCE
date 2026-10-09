@@ -1,4 +1,4 @@
-export type SignalName = 'S1' | 'S2' | 'S4';
+export type SignalName = 'S1' | 'S2' | 'S3' | 'S4' | 'S5';
 export type SignalStatus = 'NORMAL' | 'WARNING' | 'ALERT';
 export type RiskLevel = 'HIGH_TRUST' | 'WARNING' | 'ALERT';
 export type ChallengeType = 'TURN_HEAD' | 'BLINK' | 'HOLD_NEUTRAL';
@@ -34,9 +34,13 @@ export interface TelemetryData {
   laplacian_var: number;
   color_corr: number;
   ipd_drift: number;
+  hf_ratio?: number;
+  lbp_entropy?: number;
   instant_risk: number;
   smoothed_risk: number;
   faces_count: number;
+  audio_rms?: number;
+  s5_correlation?: number;
 }
 
 export interface FaceBox {

@@ -2,7 +2,7 @@ from pydantic import BaseModel
 from typing import Literal, Optional, List
 
 class SignalResult(BaseModel):
-    signal: Literal['S1', 'S2', 'S4']
+    signal: Literal['S1', 'S2', 'S3', 'S4', 'S5']
     score: float
     confidence: float
     status: Literal['NORMAL', 'WARNING', 'ALERT']
@@ -41,9 +41,13 @@ class TelemetryData(BaseModel):
     laplacian_var: float
     color_corr: float
     ipd_drift: float
+    hf_ratio: float = 0.0
+    lbp_entropy: float = 0.0
     instant_risk: float
     smoothed_risk: float
     faces_count: int
+    audio_rms: Optional[float] = None
+    s5_correlation: Optional[float] = None
 
 class DashboardState(BaseModel):
     timestamp: float

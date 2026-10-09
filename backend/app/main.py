@@ -13,7 +13,9 @@ from app.models import DashboardState, SignalResult, TelemetryData
 from app.face.mesh import FaceMeshProcessor
 from app.signals.s1_boundary import S1BoundaryDetector
 from app.signals.s2_occlusion import S2OcclusionDetector
+from app.signals.s3_texture import S3TextureDetector
 from app.signals.s4_blink import S4BlinkDetector
+from app.signals.s5_avsync import S5AVSyncDetector
 from app.signals.heatmap import HeatmapGenerator
 from app.fusion.ewma import EWMAFusionEngine
 from app.challenge.engine import ChallengeEngine
@@ -60,7 +62,9 @@ async def websocket_endpoint(websocket: WebSocket):
     face_mesh = FaceMeshProcessor()
     s1 = S1BoundaryDetector()
     s2 = S2OcclusionDetector()
+    s3 = S3TextureDetector()
     s4 = S4BlinkDetector()
+    s5 = S5AVSyncDetector()
     heatmap_gen = HeatmapGenerator()
     fusion = EWMAFusionEngine(alpha=EWMA_ALPHA)
     challenge_engine = ChallengeEngine()
@@ -71,7 +75,25 @@ async def websocket_endpoint(websocket: WebSocket):
     
     try:
         while True:
-            data = await websocket.receive_bytes()
+            audio_rms = None
+            try:
+                # Try receiving as text (JSON envelope with audio)
+                msg = await websocket.receive()
+                if msg['type'] == 'websocket.receive':
+                    if 'text' in msg and msg['text']:
+                        import json, base64
+                        payload = json.loads(msg['text'])
+                        frame_bytes = base64.b64decode(payload['frame'])
+                        audio_rms = payload.get('audio_rms', None)
+                        data = frame_bytes
+                    elif 'bytes' in msg and msg['bytes']:
+                        data = msg['bytes']
+                        audio_rms = None
+                    else:
+                        continue
+            except Exception:
+                continue
+            
             now = time.time()
             
             if now - last_frame_time < frame_interval:
@@ -103,21 +125,36 @@ async def websocket_endpoint(websocket: WebSocket):
                 hull = face_mesh.get_face_hull(landmarks, frame.shape)
                 
                 s1_res = s1.process(frame, landmarks, hull)
-                s2_res = s2.process(landmarks)
+                s2_res = s2.process(landmarks, ts=now)
+                s3_res = s3.process(frame, landmarks)
                 s4_res = s4.process(landmarks)
-                signals = [s1_res, s2_res, s4_res]
+                s5_res = s5.process(landmarks, audio_rms, now)
+                
+                if s5.is_active:
+                    signals = [s1_res, s2_res, s3_res, s4_res, s5_res]
+                else:
+                    signals = [s1_res, s2_res, s3_res, s4_res]
+                    
                 trust_score, risk_level = fusion.process(signals)
                 
                 heatmap_data = heatmap_gen.generate(frame, landmarks, hull)
                 zone_list = s2.get_occlusion_zones(landmarks, frame.shape)
                 
                 ch_state = challenge_engine.check_trigger(trust_score)
-                passed, boost = challenge_engine.verify(landmarks, is_blink=(len(s4.blink_events) > 0 and s4.in_blink))
+                
+                # Notify challenge engine when a blink occurs
+                prev_blink_count = getattr(s4, '_prev_blink_count', 0)
+                current_blink_count = len(s4.blink_events)
+                if current_blink_count > prev_blink_count:
+                    challenge_engine.notify_blink()
+                s4._prev_blink_count = current_blink_count
+
+                passed, boost = challenge_engine.verify(landmarks, is_blink=s4.in_blink)
                 if passed:
                     fusion.boost_trust(boost)
                     trust_score, risk_level = fusion.process(signals)
                     
-                instant_risk = 0.4 * s1_res.score + 0.35 * s2_res.score + 0.25 * s4_res.score
+                instant_risk = fusion.get_instant_risk(signals)
                 smoothed_risk = fusion.prev_s
                 
                 telemetry = TelemetryData(
@@ -128,9 +165,13 @@ async def websocket_endpoint(websocket: WebSocket):
                     laplacian_var=s1.last_lap_var,
                     color_corr=s1.last_color_corr,
                     ipd_drift=s2.last_ipd_drift,
+                    hf_ratio=s3.last_hf_ratio,
+                    lbp_entropy=s3.last_lbp_entropy,
                     instant_risk=instant_risk,
                     smoothed_risk=smoothed_risk,
-                    faces_count=len(all_landmarks)
+                    faces_count=len(all_landmarks),
+                    audio_rms=audio_rms if audio_rms is not None else 0.0,
+                    s5_correlation=s5.last_correlation
                 )
 
                 state = DashboardState(
@@ -148,6 +189,8 @@ async def websocket_endpoint(websocket: WebSocket):
                     telemetry=telemetry
                 )
             else:
+                s2_res = s2.process(None, ts=now)
+                
                 telemetry = TelemetryData(
                     ear=0.0,
                     blink_rate=0.0,
@@ -155,10 +198,14 @@ async def websocket_endpoint(websocket: WebSocket):
                     avg_duration_ms=0.0,
                     laplacian_var=0.0,
                     color_corr=0.0,
-                    ipd_drift=0.0,
+                    ipd_drift=s2.last_ipd_drift,
+                    hf_ratio=0.0,
+                    lbp_entropy=0.0,
                     instant_risk=0.0,
                     smoothed_risk=0.0,
-                    faces_count=0
+                    faces_count=0,
+                    audio_rms=0.0,
+                    s5_correlation=0.0
                 )
                 state = DashboardState(
                     timestamp=now,

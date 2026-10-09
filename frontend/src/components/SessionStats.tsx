@@ -3,6 +3,7 @@ import { DashboardState, RiskLevel } from '../types';
 
 interface SessionStatsProps {
   dashboardState: DashboardState | null;
+  sessionKey?: string;
 }
 
 interface RiskLogEntry {
@@ -10,11 +11,17 @@ interface RiskLogEntry {
   time: string;
 }
 
-export const SessionStats: React.FC<SessionStatsProps> = ({ dashboardState }) => {
+export const SessionStats: React.FC<SessionStatsProps> = ({ dashboardState, sessionKey }) => {
   const [framesAnalyzed, setFramesAnalyzed] = useState(0);
   const [alertsTriggered, setAlertsTriggered] = useState(0);
   const [riskHistory, setRiskHistory] = useState<RiskLogEntry[]>([]);
   const [lastRisk, setLastRisk] = useState<RiskLevel | null>(null);
+
+  useEffect(() => {
+    setFramesAnalyzed(0);
+    setAlertsTriggered(0);
+    setRiskHistory([]);
+  }, [sessionKey]);
 
   useEffect(() => {
     if (dashboardState) {

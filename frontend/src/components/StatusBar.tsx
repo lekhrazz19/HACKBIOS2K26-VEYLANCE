@@ -3,11 +3,12 @@ import React, { useState, useEffect } from 'react';
 interface StatusBarProps {
   isConnected: boolean;
   isCapturing: boolean;
+  isAudioActive?: boolean;
   onStart: () => void;
   onStop: () => void;
 }
 
-export const StatusBar: React.FC<StatusBarProps> = ({ isConnected, isCapturing, onStart, onStop }) => {
+export const StatusBar: React.FC<StatusBarProps> = ({ isConnected, isCapturing, isAudioActive, onStart, onStop }) => {
   const [time, setTime] = useState(new Date());
 
   useEffect(() => {
@@ -76,6 +77,13 @@ export const StatusBar: React.FC<StatusBarProps> = ({ isConnected, isCapturing, 
           <div className="flex items-center gap-1.5">
             <span className="text-slate-500">FPS:</span>
             <span className="text-slate-300 text-green-400">TARGET: 5fps</span>
+          </div>
+          <div className="w-px h-3 bg-slate-700" />
+          <div className="flex items-center gap-1.5">
+            <span className="text-slate-500">AUDIO_SYNC:</span>
+            <span className={isAudioActive ? "text-emerald-400 font-bold" : "text-slate-500"}>
+              {isAudioActive ? "ENABLED (S5)" : "STANDBY"}
+            </span>
           </div>
         </div>
         

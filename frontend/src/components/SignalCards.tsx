@@ -9,6 +9,7 @@ interface SignalCardsProps {
 const SIGNAL_LABELS: Record<string, string> = {
   'S1': 'Boundary Control',
   'S2': 'Face Occlusion',
+  'S3': 'Skin Texture',
   'S4': 'Blink Detection',
 };
 

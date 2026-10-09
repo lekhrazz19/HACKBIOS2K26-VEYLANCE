@@ -14,13 +14,13 @@ export const ChallengeModal: React.FC<ChallengeModalProps> = ({ challenge }) => 
     let instruction = '';
     switch (challenge.type) {
       case 'BLINK':
-        instruction = 'Please blink now';
+        instruction = 'Please blink naturally 2-3 times';
         break;
       case 'TURN_HEAD':
-        instruction = 'Please turn your head left and right';
+        instruction = 'Please slowly turn your head to the side and back';
         break;
       case 'HOLD_NEUTRAL':
-        instruction = 'Please hold still';
+        instruction = 'Please hold still with a neutral expression for 3 seconds';
         break;
       default:
         instruction = 'Please complete the challenge';
