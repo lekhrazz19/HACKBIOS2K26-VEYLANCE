@@ -22,8 +22,12 @@ function App() {
   const { 
     videoRef, 
     isCapturing, 
+    sourceType,
+    isMirrored,
     startCapture, 
-    stopCapture 
+    stopCapture,
+    switchSource,
+    error: mediaError
   } = useWebcam((blob) => {
     if (isConnected) {
       sendFrame(blob);
@@ -65,28 +69,43 @@ function App() {
   const currentDashboard = dashboardState || fallbackDashboard;
 
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-200 flex flex-col font-sans selection:bg-blue-500/30">
+    <div className="min-h-screen bg-slate-950 text-slate-200 flex flex-col font-sans selection:bg-blue-500/30">
       <StatusBar 
         isConnected={isConnected} 
         isCapturing={isCapturing} 
         isAudioActive={isCapturing}
-        onStart={startCapture} 
+        sourceType={sourceType}
+        onSelectSource={switchSource}
+        onStart={() => startCapture(sourceType)} 
         onStop={stopCapture} 
       />
+
+      {/* Permission / Media Error Toast */}
+      {mediaError && (
+        <div className="bg-amber-500/15 border-b border-amber-500/40 px-6 py-2.5 text-xs font-medium text-amber-200 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <svg className="w-4 h-4 text-amber-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            <span>{mediaError}</span>
+          </div>
+          <span className="text-[10px] uppercase font-mono text-amber-300/80">Check Permissions</span>
+        </div>
+      )}
       
-      <main className="flex-1 p-6 flex flex-col gap-6 max-w-[1680px] mx-auto w-full">
-        {/* Layer 1: High-Density Telemetry Bar */}
+      <main className="flex-1 p-6 flex flex-col gap-6 max-w-[1720px] mx-auto w-full">
+        {/* Layer 1: High-Density Telemetry Ribbon */}
         <TelemetryBar 
           telemetry={currentDashboard.telemetry} 
           faceCount={currentDashboard.faces?.length} 
         />
 
-        {/* Layer 2: Main Operational Grid */}
+        {/* Layer 2: Main Biometric & Forensic Inspection Suite */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           
           {/* Left Visual & Biometric Forensics Suite (7 of 12 columns) */}
           <div className="lg:col-span-7 flex flex-col gap-6 min-w-0">
-            {/* Live Camera Feed with Active Target Square Box */}
+            {/* Live Camera / Google Meet Screen Share Feed */}
             <WebcamView 
               videoRef={videoRef} 
               isCapturing={isCapturing} 
@@ -94,6 +113,11 @@ function App() {
               faces={currentDashboard.faces}
               trustScore={currentDashboard.trust_score}
               riskLevel={currentDashboard.risk_level}
+              sourceType={sourceType}
+              onSelectSource={switchSource}
+              onStartCapture={() => startCapture(sourceType)}
+              onStopCapture={stopCapture}
+              isMirrored={isMirrored}
             />
 
             {/* Forensics Layer: Anomaly Heatmap & Zone Radar */}
