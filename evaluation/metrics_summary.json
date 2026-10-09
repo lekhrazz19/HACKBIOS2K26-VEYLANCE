@@ -1,0 +1,38 @@
+{
+  "timestamp": 1791544868.495896,
+  "metrics": {
+    "fps": 87.9,
+    "mean_latency_ms": 11.38,
+    "p95_latency_ms": 12.58,
+    "true_positive_rate": 0.857,
+    "false_positive_rate": 0.0,
+    "f1_score": 0.923,
+    "mean_genuine_trust": 93.9
+  },
+  "latency_breakdown_ms": {
+    "S1": {
+      "mean": 8.94,
+      "p95": 10.13
+    },
+    "S2": {
+      "mean": 0.17,
+      "p95": 0.23
+    },
+    "S3": {
+      "mean": 2.03,
+      "p95": 2.48
+    },
+    "S4": {
+      "mean": 0.08,
+      "p95": 0.1
+    },
+    "S5": {
+      "mean": 0.15,
+      "p95": 0.19
+    },
+    "Fusion": {
+      "mean": 0.01,
+      "p95": 0.02
+    }
+  }
+}
