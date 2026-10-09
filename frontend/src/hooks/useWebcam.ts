@@ -76,7 +76,18 @@ export function useWebcam(onFrame: (blob: Blob) => void): UseWebcamResult {
 
       let stream: MediaStream;
 
+      if (!navigator?.mediaDevices) {
+        throw new Error(
+          'Media devices unavailable. Ensure you open via http://localhost:8000 or http://localhost:5173 (not a remote IP or 0.0.0.0) as browsers restrict camera/screen sharing to localhost or HTTPS.'
+        );
+      }
+
       if (activeSource === 'screen') {
+        if (!navigator.mediaDevices.getDisplayMedia) {
+          throw new Error(
+            'Screen sharing (getDisplayMedia) is not supported in this browser or disabled on insecure origins. Please use http://localhost:8000.'
+          );
+        }
         // Screen share mode: allows user to select Google Meet, Zoom, browser tab or window
         stream = await navigator.mediaDevices.getDisplayMedia({
           video: {
@@ -88,6 +99,11 @@ export function useWebcam(onFrame: (blob: Blob) => void): UseWebcamResult {
           audio: false
         });
       } else {
+        if (!navigator.mediaDevices.getUserMedia) {
+          throw new Error(
+            'Webcam (getUserMedia) is not supported in this browser or disabled on insecure origins. Please use http://localhost:8000.'
+          );
+        }
         // Standard Web camera mode
         stream = await navigator.mediaDevices.getUserMedia({
           video: {

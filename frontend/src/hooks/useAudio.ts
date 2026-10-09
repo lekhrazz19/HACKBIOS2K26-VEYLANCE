@@ -9,6 +9,11 @@ export function useAudio() {
 
   const start = useCallback(async () => {
     try {
+      if (!navigator?.mediaDevices?.getUserMedia) {
+        console.warn('Microphone access unavailable (requires localhost or HTTPS context).');
+        setIsActive(false);
+        return;
+      }
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
       streamRef.current = stream;
       const ctx = new AudioContext();
