@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: veylance
+    runtime: docker
+    repo: https://github.com/lekhrazz19/HACKBIOS2K26-VEYLANCE
+    branch: main
+    healthCheckPath: /health
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: PORT
+        value: "10000"
+      - key: CAMERA_MODE
+        value: browser
+      - key: TARGET_FPS
+        value: "5"
+      - key: FRAME_WIDTH
+        value: "640"
+      - key: FRAME_HEIGHT
+        value: "480"
+      - key: JPEG_QUALITY
+        value: "50"
+      - key: EWMA_ALPHA
+        value: "0.25"
+      - key: TRUST_HIGH_THRESHOLD
+        value: "70"
+      - key: TRUST_WARNING_THRESHOLD
+        value: "40"
