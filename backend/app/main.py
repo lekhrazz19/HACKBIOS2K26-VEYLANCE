@@ -38,13 +38,16 @@ if APP_ENV == "development":
         allow_headers=["*"],
     )
 
-if os.path.exists("frontend/dist/assets"):
-    app.mount('/assets', StaticFiles(directory='frontend/dist/assets'), name='assets')
+frontend_dist = "frontend/dist" if os.path.exists("frontend/dist") else "../frontend/dist"
+assets_dir = os.path.join(frontend_dist, "assets")
+if os.path.exists(assets_dir):
+    app.mount('/assets', StaticFiles(directory=assets_dir), name='assets')
 
 @app.get("/")
 async def root():
-    if os.path.exists("frontend/dist/index.html"):
-        return FileResponse("frontend/dist/index.html")
+    index_file = os.path.join(frontend_dist, "index.html")
+    if os.path.exists(index_file):
+        return FileResponse(index_file)
     return {"message": "VeyLance Backend Running (Frontend not built)"}
 
 @app.get("/health")
@@ -76,10 +79,11 @@ async def websocket_endpoint(websocket: WebSocket):
     try:
         while True:
             audio_rms = None
+            data = None
             try:
                 # Try receiving as text (JSON envelope with audio)
                 msg = await websocket.receive()
-                if msg['type'] == 'websocket.receive':
+                if msg.get('type') == 'websocket.receive':
                     if 'text' in msg and msg['text']:
                         import json, base64
                         payload = json.loads(msg['text'])
@@ -91,7 +95,12 @@ async def websocket_endpoint(websocket: WebSocket):
                         audio_rms = None
                     else:
                         continue
+                elif msg.get('type') == 'websocket.disconnect':
+                    break
             except Exception:
+                continue
+            
+            if data is None:
                 continue
             
             now = time.time()
