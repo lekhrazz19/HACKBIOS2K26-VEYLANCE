@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useWebSocket } from './hooks/useWebSocket';
 import { useWebcam } from './hooks/useWebcam';
 import { useAudio } from './hooks/useAudio';
+import { useSimulation } from './hooks/useSimulation';
 import { StatusBar } from './components/StatusBar';
 import { WebcamView } from './components/WebcamView';
 import { TrustGauge } from './components/TrustGauge';
@@ -19,6 +20,15 @@ function App() {
   
   const { start: startAudio, stop: stopAudio, getRMS } = useAudio();
 
+  const {
+    isSimulating,
+    activeScenario,
+    startSimulation,
+    stopSimulation,
+    setActiveScenario,
+    simulatedState
+  } = useSimulation();
+
   const { 
     videoRef, 
     isCapturing, 
@@ -29,7 +39,7 @@ function App() {
     switchSource,
     error: mediaError
   } = useWebcam((blob) => {
-    if (isConnected) {
+    if (isConnected && !isSimulating) {
       sendFrame(blob);
     }
   });
@@ -53,6 +63,8 @@ function App() {
   }, [stopCapture, stopAudio]);
 
   const fallbackDashboard = {
+    timestamp: Date.now(),
+    session_id: 'STANDBY',
     trust_score: 100,
     risk_level: 'HIGH_TRUST' as const,
     face_detected: false,
@@ -62,22 +74,42 @@ function App() {
     faces: [],
     heatmap: [],
     occlusion_zones: [],
-    telemetry: undefined,
-    faces_count: 0
+    telemetry: undefined
   };
 
-  const currentDashboard = dashboardState || fallbackDashboard;
+  // Determine current active dashboard data
+  const currentDashboard = isSimulating 
+    ? (simulatedState || fallbackDashboard)
+    : (dashboardState || fallbackDashboard);
+
+  const toggleSimulation = () => {
+    if (isSimulating) {
+      stopSimulation();
+    } else {
+      if (isCapturing) stopCapture();
+      startSimulation('baseline');
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-200 flex flex-col font-sans selection:bg-blue-500/30">
+    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-cyan-500/30 cyber-grid">
       <StatusBar 
         isConnected={isConnected} 
         isCapturing={isCapturing} 
         isAudioActive={isCapturing}
         sourceType={sourceType}
         onSelectSource={switchSource}
-        onStart={() => startCapture(sourceType)} 
-        onStop={stopCapture} 
+        onStart={() => {
+          if (isSimulating) stopSimulation();
+          startCapture(sourceType);
+        }} 
+        onStop={stopCapture}
+        audioRms={currentDashboard.telemetry?.audio_rms}
+        s5Correlation={currentDashboard.telemetry?.s5_correlation}
+        isSimulating={isSimulating}
+        activeScenario={activeScenario}
+        onToggleSimulation={toggleSimulation}
+        onSelectScenario={setActiveScenario}
       />
 
       {/* Permission / Media Error Toast */}
@@ -93,7 +125,7 @@ function App() {
         </div>
       )}
       
-      <main className="flex-1 p-6 flex flex-col gap-6 max-w-[1720px] mx-auto w-full">
+      <main className="flex-1 p-5 sm:p-6 flex flex-col gap-6 max-w-[1740px] mx-auto w-full">
         {/* Layer 1: High-Density Telemetry Ribbon */}
         <TelemetryBar 
           telemetry={currentDashboard.telemetry} 
@@ -105,7 +137,7 @@ function App() {
           
           {/* Left Visual & Biometric Forensics Suite (7 of 12 columns) */}
           <div className="lg:col-span-7 flex flex-col gap-6 min-w-0">
-            {/* Live Camera / Google Meet Screen Share Feed */}
+            {/* Live Camera / Google Meet Screen Share / Simulated Feed */}
             <WebcamView 
               videoRef={videoRef} 
               isCapturing={isCapturing} 
@@ -115,9 +147,14 @@ function App() {
               riskLevel={currentDashboard.risk_level}
               sourceType={sourceType}
               onSelectSource={switchSource}
-              onStartCapture={() => startCapture(sourceType)}
+              onStartCapture={() => {
+                if (isSimulating) stopSimulation();
+                startCapture(sourceType);
+              }}
               onStopCapture={stopCapture}
               isMirrored={isMirrored}
+              isSimulating={isSimulating}
+              activeScenario={activeScenario}
             />
 
             {/* Forensics Layer: Anomaly Heatmap & Zone Radar */}
@@ -147,7 +184,7 @@ function App() {
             <SignalCards signals={currentDashboard.signals} />
 
             {/* Session Verification Timeline & Audit Stats */}
-            <SessionStats dashboardState={dashboardState} sessionKey={sessionKey} />
+            <SessionStats dashboardState={currentDashboard} sessionKey={isSimulating ? activeScenario : sessionKey} />
           </div>
         </div>
       </main>
