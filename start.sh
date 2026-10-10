@@ -20,10 +20,8 @@ else
     echo "[1/3] Virtual environment exists."
 fi
 
-source backend/venv/bin/activate
-
 echo "[2/3] Installing Python dependencies..."
-pip install -q -r backend/requirements.txt
+backend/venv/bin/pip install -q -r backend/requirements.txt
 
 # Build frontend if needed
 if [ ! -d "frontend/dist" ]; then
@@ -39,4 +37,4 @@ echo "Open http://localhost:${PORT:-8000} in your browser"
 echo ""
 
 cd backend
-uvicorn app.main:app --host 0.0.0.0 --port "${PORT:-8000}" --reload
+./venv/bin/uvicorn app.main:app --host 0.0.0.0 --port "${PORT:-8000}" --reload
