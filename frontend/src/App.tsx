@@ -121,7 +121,7 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-100 flex flex-col font-sans selection:bg-zinc-800">
+    <div className="min-h-screen bg-[#0c0e12] text-zinc-100 flex flex-col font-sans selection:bg-[#1e2330]">
       {/* 1. Unified Clean Header Bar */}
       <StatusBar 
         isConnected={isConnected} 

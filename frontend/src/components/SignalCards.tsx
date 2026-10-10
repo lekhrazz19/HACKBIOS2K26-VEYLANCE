@@ -85,43 +85,43 @@ export const SignalCards: React.FC<SignalCardsProps> = ({ signals }) => {
   const getStatusBadge = (signal?: SignalResult) => {
     if (!signal) {
       return (
-        <span className="text-[11px] font-medium text-zinc-500 bg-zinc-800/60 border border-zinc-700/40 px-2 py-0.5 rounded">
+        <span className="text-[11px] font-medium text-slate-400 bg-[#181c26] border border-[#222734] px-2 py-0.5 rounded">
           Standby
         </span>
       );
     }
     if (signal.status === 'ALERT') {
       return (
-        <span className="text-[11px] font-medium text-rose-400 bg-rose-500/10 border border-rose-500/20 px-2 py-0.5 rounded">
+        <span className="text-[11px] font-medium text-rose-400 bg-rose-950/40 border border-rose-800/40 px-2 py-0.5 rounded">
           Flagged
         </span>
       );
     }
     if (signal.status === 'WARNING') {
       return (
-        <span className="text-[11px] font-medium text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded">
+        <span className="text-[11px] font-medium text-amber-400 bg-amber-950/40 border border-amber-800/40 px-2 py-0.5 rounded">
           Warning
         </span>
       );
     }
     return (
-      <span className="text-[11px] font-medium text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded">
+      <span className="text-[11px] font-medium text-emerald-400 bg-emerald-950/40 border border-emerald-800/40 px-2 py-0.5 rounded">
         Normal
       </span>
     );
   };
 
   return (
-    <div className="bg-zinc-900/60 rounded-lg p-3.5 border border-zinc-800/80 flex flex-col justify-between w-full h-full min-h-[265px]">
-      <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
-        <span className="text-xs font-medium text-zinc-300">Biometric Audit Signals</span>
-        <span className="text-[11px] font-mono text-zinc-500">
+    <div className="bg-[#12151c]/90 rounded-lg p-3.5 border border-[#222734] flex flex-col justify-between w-full h-full min-h-[265px] shadow-xs">
+      <div className="flex items-center justify-between border-b border-[#222734] pb-2">
+        <span className="text-xs font-medium text-zinc-200">Biometric Audit Signals</span>
+        <span className="text-[11px] font-mono text-slate-400">
           5 Pipelines Active
         </span>
       </div>
 
-      {/* Permanent Structured 5-Row Table with Zero Text Clipping */}
-      <div className="flex flex-col divide-y divide-zinc-800/80 flex-1 justify-between py-1">
+      {/* Permanent Structured 5-Row Table with Zero Text Clipping & Explicit Column Widths */}
+      <div className="flex flex-col divide-y divide-[#222734]/70 flex-1 justify-between py-1">
         {CANONICAL_SIGNALS.map((def) => {
           const liveSignal = signals.find(s => s.signal === def.signal);
           const isExpanded = expandedSignal === def.signal;
@@ -129,36 +129,36 @@ export const SignalCards: React.FC<SignalCardsProps> = ({ signals }) => {
           const statusBadge = getStatusBadge(liveSignal);
 
           return (
-            <div key={def.signal} className="py-2 px-1 flex flex-col justify-center">
+            <div key={def.signal} className="py-2.5 px-1 flex flex-col justify-center">
               <div 
                 onClick={() => toggleExpand(def.signal)}
                 className="flex items-center justify-between gap-2 cursor-pointer select-none hover:text-zinc-200 transition-colors"
               >
-                {/* Col 1: Tag pill (fixed w-10) */}
-                <div className="w-10 shrink-0">
-                  <span className="font-mono font-bold text-xs bg-zinc-800 text-zinc-300 rounded px-1.5 py-0.5 text-center block">
+                {/* Col 1: Tag column: w-9 text-center font-mono text-xs bg-zinc-800 rounded py-0.5 text-zinc-300 */}
+                <div className="w-9 shrink-0 text-center">
+                  <span className="font-mono font-bold text-xs bg-[#181c26] text-zinc-300 rounded py-0.5 px-1 border border-[#222734] text-center block">
                     {def.signal}
                   </span>
                 </div>
 
-                {/* Col 2: Title (flex-1) */}
+                {/* Col 2: Name column: flex-1 text-sm font-medium text-zinc-200 truncate */}
                 <div className="flex-1 min-w-0 pr-2">
                   <span className="text-sm font-medium text-zinc-200 truncate block">
                     {def.title}
                   </span>
                 </div>
 
-                {/* Col 3: Primary Metric Value (fixed w-28 text-right) */}
+                {/* Col 3: Telemetry column: w-28 text-right font-mono text-xs text-zinc-400 */}
                 <div className="w-28 shrink-0 text-right">
-                  <span className="font-mono text-xs text-zinc-300 font-medium">
+                  <span className="font-mono text-xs text-slate-300 font-medium">
                     {primaryMetric}
                   </span>
                 </div>
 
-                {/* Col 4: Status Badge + Chevron (fixed w-24 text-right) */}
-                <div className="w-24 shrink-0 flex items-center justify-end gap-1.5">
+                {/* Col 4: Status column: w-20 text-right with color-coded status badges + Chevron */}
+                <div className="w-20 shrink-0 flex items-center justify-end gap-1.5">
                   {statusBadge}
-                  <svg className={`w-3.5 h-3.5 text-zinc-500 transition-transform ${isExpanded ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className={`w-3.5 h-3.5 text-slate-500 transition-transform ${isExpanded ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
                   </svg>
                 </div>
@@ -166,20 +166,20 @@ export const SignalCards: React.FC<SignalCardsProps> = ({ signals }) => {
 
               {/* Expandable Disclosure Drawer */}
               {isExpanded && (
-                <div className="bg-zinc-950 p-2.5 rounded border border-zinc-800 text-[11px] flex flex-col gap-1.5 text-zinc-400 mt-2">
+                <div className="bg-[#0c0e12] p-2.5 rounded border border-[#222734] text-[11px] flex flex-col gap-1.5 text-slate-400 mt-2">
                   {liveSignal?.reason && (
                     <div>
-                      <span className="text-zinc-500 font-sans block mb-0.5">Audit Detail:</span>
+                      <span className="text-slate-500 font-sans block mb-0.5">Audit Detail:</span>
                       <span className="text-zinc-300 font-mono break-all">{liveSignal.reason}</span>
                     </div>
                   )}
                   <div>
-                    <span className="text-zinc-500 font-sans block mb-0.5">Target Attack Vector:</span>
+                    <span className="text-slate-500 font-sans block mb-0.5">Target Attack Vector:</span>
                     <span className="text-zinc-300">{def.attackVector}</span>
                   </div>
                   <div>
-                    <span className="text-zinc-500 font-sans block mb-0.5">Verification Physics:</span>
-                    <span className="text-zinc-400">{def.method}</span>
+                    <span className="text-slate-500 font-sans block mb-0.5">Verification Physics:</span>
+                    <span className="text-slate-400">{def.method}</span>
                   </div>
                 </div>
               )}

@@ -46,11 +46,11 @@ export const OcclusionGraph: React.FC<OcclusionGraphProps> = ({ occlusionZones }
     <div className="flex-1 flex flex-col justify-between min-h-0 w-full overflow-hidden">
       {/* Top micro status indicator (shrink-0) */}
       <div className="flex justify-between items-center text-xs pb-1 shrink-0">
-        <span className="text-zinc-500 font-sans text-[11px]">Multi-zone occlusion radar</span>
+        <span className="text-slate-400 font-sans text-[11px]">Multi-zone occlusion radar</span>
         <span className={`text-[10px] font-medium px-1.5 py-0.2 rounded border ${
           hasOcclusion 
-            ? 'text-amber-400 bg-amber-500/10 border-amber-500/20' 
-            : 'text-zinc-400 bg-zinc-800/60 border-zinc-700/50'
+            ? 'text-amber-400 bg-amber-950/40 border-amber-800/40' 
+            : 'text-slate-400 bg-[#181c26] border-[#222734]'
         }`}>
           {hasOcclusion ? 'Occluded' : 'Clear'}
         </span>
@@ -71,7 +71,7 @@ export const OcclusionGraph: React.FC<OcclusionGraphProps> = ({ occlusionZones }
               cy={CENTER}
               r={RADIUS * r}
               fill="transparent"
-              stroke="#27272a"
+              stroke="#222734"
               strokeWidth="1"
             />
           ))}
@@ -87,13 +87,13 @@ export const OcclusionGraph: React.FC<OcclusionGraphProps> = ({ occlusionZones }
                   y1={CENTER}
                   x2={pt.x}
                   y2={pt.y}
-                  stroke="#27272a"
+                  stroke="#222734"
                   strokeWidth="1"
                 />
                 <text
                   x={labelPt.x}
                   y={labelPt.y}
-                  fill="#71717a"
+                  fill="#94a3b8"
                   fontSize="8.5"
                   fontFamily="Plus Jakarta Sans, sans-serif"
                   fontWeight="500"
@@ -109,7 +109,7 @@ export const OcclusionGraph: React.FC<OcclusionGraphProps> = ({ occlusionZones }
           {/* Data Polygon */}
           <polygon
             points={getPointsString(values)}
-            fill={hasOcclusion ? "rgba(244, 63, 94, 0.15)" : "rgba(16, 185, 129, 0.15)"}
+            fill={hasOcclusion ? "rgba(244, 63, 94, 0.2)" : "rgba(16, 185, 129, 0.2)"}
             stroke={hasOcclusion ? "#f43f5e" : "#10b981"}
             strokeWidth="1.5"
             strokeLinejoin="round"
@@ -133,14 +133,14 @@ export const OcclusionGraph: React.FC<OcclusionGraphProps> = ({ occlusionZones }
       </div>
 
       {/* 5 zone metrics chips placed directly beneath (shrink-0) */}
-      <div className="flex justify-between items-center pt-2 border-t border-zinc-800/60 mt-1 shrink-0">
+      <div className="flex justify-between items-center pt-2 border-t border-[#222734]/70 mt-1 shrink-0">
         {zones.map((z, idx) => {
           const score = values[idx];
           const isBad = score > 0.45;
           const label = z === "Right Eye" ? "R-Eye" : z === "Left Eye" ? "L-Eye" : z === "Mouth/Chin" ? "Mouth" : z;
           return (
-            <div key={z} className="flex items-center gap-1 text-[11px] font-mono text-zinc-400">
-              <span className="font-sans text-zinc-500">{label}</span>
+            <div key={z} className="flex items-center gap-1 text-[11px] font-mono text-slate-400">
+              <span className="font-sans text-slate-500">{label}</span>
               <span className={`font-semibold ${isBad ? 'text-rose-400' : 'text-zinc-200'}`}>
                 {Math.round(score * 100)}%
               </span>

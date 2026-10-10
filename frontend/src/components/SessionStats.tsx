@@ -91,47 +91,53 @@ export const SessionStats: React.FC<SessionStatsProps> = ({
 
   return (
     <>
-      <div className="h-full flex flex-col justify-between p-3.5 bg-zinc-900/40 border border-zinc-800/80 rounded-lg w-full overflow-hidden">
+      <div className="h-full flex flex-col justify-between p-3.5 bg-[#12151c]/90 border border-[#222734] rounded-lg w-full overflow-hidden shadow-xs">
         {/* Top bar: Title "Transition Log" + compact button "[Audit Report]" (shrink-0) */}
-        <div className="flex justify-between items-center border-b border-zinc-800 pb-2 mb-1 shrink-0">
-          <span className="text-xs font-medium text-zinc-300">Transition Log</span>
+        <div className="flex justify-between items-center border-b border-[#222734] pb-2 mb-1 shrink-0">
+          <span className="text-xs font-medium text-zinc-200">Transition Log</span>
           <button
             onClick={() => setIsReportOpen(true)}
-            className="px-2.5 py-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-medium rounded border border-zinc-700/80 transition-colors cursor-pointer"
+            className="px-2.5 py-1 bg-[#181c26] hover:bg-[#1e2330] text-zinc-200 text-xs font-medium rounded border border-[#222734] transition-colors cursor-pointer"
           >
             Audit Report
           </button>
         </div>
 
-        {/* Log list: flex-1 min-h-0 overflow-y-auto divide-y divide-zinc-800/60 */}
-        <div className="flex-1 min-h-0 overflow-y-auto divide-y divide-zinc-800/60 my-1 pr-1 font-mono text-xs">
+        {/* Log list: flex-1 min-h-0 overflow-y-auto divide-y divide-[#222734]/50 */}
+        <div className="flex-1 min-h-0 overflow-y-auto divide-y divide-[#222734]/50 my-1 pr-1 font-mono text-xs">
           {events.length > 0 ? (
             events.map((entry, i) => {
               const isAlert = entry.severity === 'alert';
               const isWarn = entry.severity === 'warning';
               const statusText = isAlert ? 'FLAGGED' : isWarn ? 'WARN' : 'NORMAL';
-              const statusColor = isAlert ? 'text-rose-400' : isWarn ? 'text-amber-400' : 'text-emerald-400';
+              const statusColor = isAlert 
+                ? 'text-rose-400 bg-rose-950/40 border-rose-800/40' 
+                : isWarn 
+                ? 'text-amber-400 bg-amber-950/40 border-amber-800/40' 
+                : 'text-emerald-400 bg-emerald-950/40 border-emerald-800/40';
 
               return (
-                <div key={i} className="py-1.5 flex items-center justify-between text-zinc-400 hover:bg-zinc-900/30">
+                <div key={i} className="py-1.5 flex items-center justify-between text-slate-400 hover:bg-[#181c26]/40 px-1 rounded transition-colors">
                   {/* Col 1: Timestamp */}
-                  <span className="text-zinc-500 text-[11px] shrink-0">{entry.timestamp}</span>
+                  <span className="text-slate-500 text-[11px] shrink-0">{entry.timestamp}</span>
 
                   {/* Col 2: State name */}
-                  <span className="text-zinc-300 truncate max-w-[140px] px-2 text-[11px] font-medium">
+                  <span className="text-zinc-200 truncate max-w-[140px] px-2 text-[11px] font-medium">
                     {entry.type}
                   </span>
 
                   {/* Col 3: Score + Status */}
                   <div className="flex items-center gap-1.5 shrink-0 text-[11px]">
-                    <span className="text-zinc-400">{entry.trustScore.toFixed(0)}%</span>
-                    <span className={`font-semibold ${statusColor}`}>{statusText}</span>
+                    <span className="text-slate-400 font-mono">{entry.trustScore.toFixed(0)}%</span>
+                    <span className={`font-semibold px-1.5 py-0.2 rounded border text-[10px] ${statusColor}`}>
+                      {statusText}
+                    </span>
                   </div>
                 </div>
               );
             })
           ) : (
-            <div className="h-full flex items-center justify-center p-3 text-center text-zinc-600 text-xs font-sans">
+            <div className="h-full flex items-center justify-center p-3 text-center text-slate-500 text-xs font-sans">
               No state transitions logged
             </div>
           )}

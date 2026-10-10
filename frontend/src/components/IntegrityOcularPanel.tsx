@@ -39,20 +39,20 @@ export const IntegrityOcularPanel: React.FC<IntegrityOcularPanelProps> = ({
 
   // Determine State Color & Badge
   let badgeText = 'Verified';
-  let badgeClass = 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30';
+  let badgeClass = 'text-emerald-400 bg-emerald-950/40 border-emerald-800/40';
   let scoreColor = 'text-emerald-400';
 
   if (!faceDetected && trustScore === 100) {
     badgeText = 'Standby';
-    badgeClass = 'text-zinc-400 bg-zinc-800/60 border-zinc-700/40';
+    badgeClass = 'text-slate-400 bg-[#181c26] border-[#222734]';
     scoreColor = 'text-zinc-100';
   } else if (riskLevel === 'WARNING') {
     badgeText = 'Warning';
-    badgeClass = 'text-amber-400 bg-amber-500/10 border-amber-500/30';
+    badgeClass = 'text-amber-400 bg-amber-950/40 border-amber-800/40';
     scoreColor = 'text-amber-400';
   } else if (riskLevel === 'ALERT') {
     badgeText = 'Flagged';
-    badgeClass = 'text-rose-400 bg-rose-500/10 border-rose-500/30';
+    badgeClass = 'text-rose-400 bg-rose-950/40 border-rose-800/40';
     scoreColor = 'text-rose-400';
   }
 
@@ -104,38 +104,38 @@ export const IntegrityOcularPanel: React.FC<IntegrityOcularPanelProps> = ({
   };
 
   return (
-    <div className="bg-zinc-900/60 rounded-lg border border-zinc-800/80 flex flex-col justify-between w-full h-full overflow-hidden">
+    <div className="bg-[#12151c]/90 rounded-lg border border-[#222734] flex flex-col justify-between w-full h-full overflow-hidden shadow-xs">
       {/* Top Header Strip */}
-      <div className="px-3.5 pt-2.5 pb-2 flex justify-between items-center border-b border-zinc-800">
-        <span className="text-xs font-medium text-zinc-300">Identity Integrity & Ocular Diagnostics</span>
+      <div className="px-3.5 pt-2.5 pb-2 flex justify-between items-center border-b border-[#222734]">
+        <span className="text-xs font-medium text-zinc-200">Identity Authenticity & Dynamics</span>
         <span className={`text-[11px] font-medium px-2 py-0.5 rounded border ${badgeClass}`}>
           {badgeText}
         </span>
       </div>
 
       {/* Main Two-Column Diagnostics Section */}
-      <div className="px-3.5 py-2.5 flex flex-row items-stretch gap-4 flex-1">
+      <div className="px-3.5 py-2.5 flex flex-row items-stretch gap-4 flex-1 min-h-0">
         {/* Left Column (Score & Trust Index, w-2/5) */}
-        <div className="w-2/5 flex flex-col justify-between pr-3 border-r border-zinc-800/80">
+        <div className="w-2/5 flex flex-col justify-between pr-3 border-r border-[#222734]">
           <div>
-            <span className="text-[11px] text-zinc-500 font-sans block">Authenticity Index</span>
+            <span className="text-[11px] text-slate-400 font-sans block">Authenticity Index</span>
             <div className="flex items-baseline gap-1 mt-0.5">
-              <span className={`text-3xl font-mono font-bold tracking-tight ${scoreColor}`}>
+              <span className={`text-4xl font-mono font-bold tracking-tight ${scoreColor}`}>
                 {Math.round(trustScore)}%
               </span>
             </div>
           </div>
 
-          <div className="flex flex-col gap-1 pt-1.5 border-t border-zinc-850 font-mono text-xs">
+          <div className="flex flex-col gap-1 pt-1.5 border-t border-[#222734]/70 font-mono text-xs">
             <div className="flex flex-col">
-              <span className="text-[10px] text-zinc-500 font-sans">Confidence</span>
-              <span className="text-zinc-300 text-[11px] font-medium">
+              <span className="text-[10px] text-slate-400 font-sans">Confidence</span>
+              <span className="text-zinc-200 text-[11px] font-medium">
                 {confidenceLevel} ({highestConfidence.toFixed(1)}%)
               </span>
             </div>
             <div className="flex flex-col">
-              <span className="text-[10px] text-zinc-500 font-sans">Session Duration</span>
-              <span className="text-zinc-300 text-[11px] font-medium">
+              <span className="text-[10px] text-slate-400 font-sans">Active Duration</span>
+              <span className="text-zinc-200 text-[11px] font-medium">
                 {formatSessionTime(sessionSeconds)}
               </span>
             </div>
@@ -145,16 +145,16 @@ export const IntegrityOcularPanel: React.FC<IntegrityOcularPanelProps> = ({
         {/* Right Column (Ocular Dynamics Grid, w-3/5) */}
         <div className="w-3/5 grid grid-cols-2 gap-x-3 gap-y-2 text-xs">
           {/* 1. Eye Ratio (EAR) */}
-          <div className="flex flex-col justify-between">
-            <span className="text-[10px] text-zinc-500 font-sans">Eye Ratio (EAR)</span>
+          <div className="flex flex-col justify-between p-1.5 rounded bg-[#181c26]/60 border border-[#222734]/50">
+            <span className="text-[10px] text-slate-400 font-sans">Eye Ratio (EAR)</span>
             <div className="flex items-baseline justify-between mt-0.5">
               <span className="font-mono text-sm font-semibold text-zinc-100">
                 {telemetry ? ear.toFixed(2) : '0.00'}
               </span>
               <span className={`text-[10px] font-medium px-1.5 py-0.2 rounded border ${
                 earStatus === 'Open'
-                  ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20'
-                  : 'text-amber-400 bg-amber-500/10 border-amber-500/20'
+                  ? 'text-emerald-400 bg-emerald-950/40 border-emerald-800/40'
+                  : 'text-amber-400 bg-amber-950/40 border-amber-800/40'
               }`}>
                 {earStatus}
               </span>
@@ -162,16 +162,16 @@ export const IntegrityOcularPanel: React.FC<IntegrityOcularPanelProps> = ({
           </div>
 
           {/* 2. Blink Frequency */}
-          <div className="flex flex-col justify-between">
-            <span className="text-[10px] text-zinc-500 font-sans">Blink Frequency</span>
+          <div className="flex flex-col justify-between p-1.5 rounded bg-[#181c26]/60 border border-[#222734]/50">
+            <span className="text-[10px] text-slate-400 font-sans">Blink Rate</span>
             <div className="flex items-baseline justify-between mt-0.5">
               <span className="font-mono text-sm font-semibold text-zinc-100">
                 {telemetry && !isCalibrating ? `${blinkRate.toFixed(1)}/min` : '0.0/min'}
               </span>
               <span className={`text-[10px] font-medium px-1.5 py-0.2 rounded border ${
                 rateInterpretation === 'Human Normal'
-                  ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20'
-                  : 'text-amber-400 bg-amber-500/10 border-amber-500/20'
+                  ? 'text-emerald-400 bg-emerald-950/40 border-emerald-800/40'
+                  : 'text-amber-400 bg-amber-950/40 border-amber-800/40'
               }`}>
                 {rateInterpretation}
               </span>
@@ -179,16 +179,16 @@ export const IntegrityOcularPanel: React.FC<IntegrityOcularPanelProps> = ({
           </div>
 
           {/* 3. Regularity (IBI CV) */}
-          <div className="flex flex-col justify-between">
-            <span className="text-[10px] text-zinc-500 font-sans">Regularity (IBI CV)</span>
+          <div className="flex flex-col justify-between p-1.5 rounded bg-[#181c26]/60 border border-[#222734]/50">
+            <span className="text-[10px] text-slate-400 font-sans">Regularity (IBI CV)</span>
             <div className="flex items-baseline justify-between mt-0.5">
               <span className="font-mono text-sm font-semibold text-zinc-100">
                 {telemetry ? blinkCv.toFixed(2) : '0.00'}
               </span>
               <span className={`text-[10px] font-medium px-1.5 py-0.2 rounded border ${
                 regularityInterpretation === 'Natural'
-                  ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20'
-                  : 'text-rose-400 bg-rose-500/10 border-rose-500/20'
+                  ? 'text-emerald-400 bg-emerald-950/40 border-emerald-800/40'
+                  : 'text-rose-400 bg-rose-950/40 border-rose-800/40'
               }`}>
                 {regularityInterpretation}
               </span>
@@ -196,16 +196,16 @@ export const IntegrityOcularPanel: React.FC<IntegrityOcularPanelProps> = ({
           </div>
 
           {/* 4. Blink Duration */}
-          <div className="flex flex-col justify-between">
-            <span className="text-[10px] text-zinc-500 font-sans">Blink Duration</span>
+          <div className="flex flex-col justify-between p-1.5 rounded bg-[#181c26]/60 border border-[#222734]/50">
+            <span className="text-[10px] text-slate-400 font-sans">Blink Duration</span>
             <div className="flex items-baseline justify-between mt-0.5">
               <span className="font-mono text-sm font-semibold text-zinc-100">
-                {telemetry ? `${avgDur.toFixed(0)} ms` : '0 ms'}
+                {telemetry ? `${avgDur.toFixed(0)}ms` : '0ms'}
               </span>
               <span className={`text-[10px] font-medium px-1.5 py-0.2 rounded border ${
                 durationInterpretation === '120-380ms Normal'
-                  ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20'
-                  : 'text-amber-400 bg-amber-500/10 border-amber-500/20'
+                  ? 'text-emerald-400 bg-emerald-950/40 border-emerald-800/40'
+                  : 'text-amber-400 bg-amber-950/40 border-amber-800/40'
               }`}>
                 {durationInterpretation}
               </span>
@@ -215,7 +215,7 @@ export const IntegrityOcularPanel: React.FC<IntegrityOcularPanelProps> = ({
       </div>
 
       {/* Actionable Diagnostic Footer (Needful Insight Strip) */}
-      <div className="px-3.5 py-2 bg-zinc-900/80 border-t border-zinc-800/80 flex items-center gap-2 text-xs">
+      <div className="px-3.5 py-2 bg-[#181c26]/80 border-t border-[#222734] flex items-center gap-2 text-xs">
         <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${
           riskLevel === 'ALERT'
             ? 'bg-rose-400'
@@ -225,7 +225,7 @@ export const IntegrityOcularPanel: React.FC<IntegrityOcularPanelProps> = ({
             ? 'bg-zinc-500'
             : 'bg-emerald-400'
         }`} />
-        <p className="text-[11px] text-zinc-300 font-sans leading-tight truncate">
+        <p className="text-[11px] text-slate-300 font-sans leading-tight truncate">
           {getDiagnosticMessage()}
         </p>
       </div>

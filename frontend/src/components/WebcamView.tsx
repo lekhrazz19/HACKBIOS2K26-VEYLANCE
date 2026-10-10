@@ -192,15 +192,15 @@ export const WebcamView: React.FC<WebcamViewProps> = ({
   return (
     <div 
       ref={containerRef}
-      className="relative w-full aspect-video bg-zinc-950 rounded-lg overflow-hidden border border-zinc-800/80 flex flex-col justify-between"
+      className="relative w-full aspect-video bg-[#0c0e12] rounded-lg overflow-hidden border border-[#222734] flex flex-col justify-between shadow-xs"
     >
       {/* Top Overlay Bar */}
       <div className="absolute top-3 left-3 right-3 z-30 flex items-center justify-between pointer-events-none">
         {/* Stream Status Dot */}
         {(isCapturing || isSimulating) && (
-          <div className="flex items-center gap-2 bg-zinc-900/90 border border-zinc-800 px-2.5 py-1 rounded-md text-xs font-sans">
-            <span className={`w-1.5 h-1.5 rounded-full ${faceDetected || isSimulating ? 'bg-emerald-400' : 'bg-zinc-500'}`} />
-            <span className="text-zinc-300 font-medium">
+          <div className="flex items-center gap-2 bg-[#12151c]/90 border border-[#222734] px-2.5 py-1 rounded-md text-xs font-sans">
+            <span className={`w-1.5 h-1.5 rounded-full ${faceDetected || isSimulating ? 'bg-emerald-400' : 'bg-slate-500'}`} />
+            <span className="text-zinc-200 font-medium">
               {faceDetected || isSimulating ? `Tracking (${faces?.length || 1})` : 'Searching'}
             </span>
           </div>
@@ -209,7 +209,7 @@ export const WebcamView: React.FC<WebcamViewProps> = ({
         <div className="ml-auto pointer-events-auto flex items-center gap-1.5">
           <button
             onClick={toggleFullscreen}
-            className={`p-1.5 rounded bg-zinc-900/90 border border-zinc-800 hover:border-zinc-700 text-xs transition-colors cursor-pointer ${isFullscreen ? 'text-zinc-100' : 'text-zinc-400 hover:text-zinc-200'}`}
+            className={`p-1.5 rounded bg-[#12151c]/90 border border-[#222734] hover:border-[#32394c] text-xs transition-colors cursor-pointer ${isFullscreen ? 'text-zinc-100' : 'text-slate-400 hover:text-zinc-200'}`}
             title={isFullscreen ? 'Exit fullscreen' : 'Toggle fullscreen'}
           >
             <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

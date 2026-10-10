@@ -189,11 +189,11 @@ export const HeatmapPanel: React.FC<HeatmapPanelProps> = ({ heatmap }) => {
     <div ref={containerRef} className="flex-1 flex flex-col justify-between min-h-0 w-full overflow-hidden">
       {/* Palette switch & Caption toolbar (shrink-0) */}
       <div className="flex items-center justify-between text-xs pb-1 shrink-0">
-        <span className="text-zinc-500 font-sans text-[11px]">GAN texture anomaly matrix</span>
+        <span className="text-slate-400 font-sans text-[11px]">GAN texture anomaly matrix</span>
         <select
           value={palette}
           onChange={(e) => setPalette(e.target.value as ColorPalette)}
-          className="bg-zinc-900 border border-zinc-800 text-zinc-400 rounded px-1.5 py-0.5 text-[10px] outline-none cursor-pointer"
+          className="bg-[#181c26] border border-[#222734] text-slate-300 rounded px-1.5 py-0.5 text-[10px] outline-none cursor-pointer"
         >
           <option value="thermal">Thermal</option>
           <option value="spectral">Spectral</option>
@@ -208,14 +208,14 @@ export const HeatmapPanel: React.FC<HeatmapPanelProps> = ({ heatmap }) => {
           height={400}
           onMouseMove={handleMouseMove}
           onMouseLeave={handleMouseLeave}
-          className="rounded cursor-crosshair border border-zinc-800/80 max-h-[170px] w-full h-full object-contain block"
+          className="rounded cursor-crosshair border border-[#222734] max-h-[170px] w-full h-full object-contain block"
           style={{ width: '100%', height: '100%', maxHeight: '170px', objectFit: 'contain' }}
         />
 
         {/* Clean key-value tooltip */}
         {hoverData && (
           <div 
-            className="absolute z-20 pointer-events-none bg-zinc-900/95 border border-zinc-700/80 rounded px-2 py-1 text-xs shadow-lg font-mono flex flex-col gap-0.5"
+            className="absolute z-20 pointer-events-none bg-[#12151c]/95 border border-[#222734] rounded px-2 py-1 text-xs shadow-lg font-mono flex flex-col gap-0.5"
             style={{
               left: Math.min(140, Math.max(10, hoverData.pixelX + 10)),
               top: Math.min(110, Math.max(10, hoverData.pixelY - 10))
@@ -223,10 +223,10 @@ export const HeatmapPanel: React.FC<HeatmapPanelProps> = ({ heatmap }) => {
           >
             <div className="flex items-center justify-between gap-2 text-zinc-300 text-[10px]">
               <span className="font-sans font-medium text-zinc-200">{hoverData.zone}</span>
-              <span className="text-zinc-500">[{hoverData.x},{hoverData.y}]</span>
+              <span className="text-slate-500">[{hoverData.x},{hoverData.y}]</span>
             </div>
             <div className="flex items-center justify-between gap-2 text-[10px]">
-              <span className="text-zinc-500 font-sans">Score:</span>
+              <span className="text-slate-400 font-sans">Score:</span>
               <span className={hoverData.score > 0.5 ? 'text-rose-400' : 'text-emerald-400'}>
                 {(hoverData.score * 100).toFixed(0)}%
               </span>
@@ -236,27 +236,27 @@ export const HeatmapPanel: React.FC<HeatmapPanelProps> = ({ heatmap }) => {
       </div>
 
       {/* Bottom Readouts (shrink-0) */}
-      <div className="flex justify-between items-center pt-2 border-t border-zinc-800/60 mt-1 shrink-0 text-[11px] font-mono text-center">
-        <div className="flex items-center gap-1 text-zinc-400">
-          <span className="font-sans text-zinc-500 text-[10px]">Peak</span>
+      <div className="flex justify-between items-center pt-2 border-t border-[#222734]/70 mt-1 shrink-0 text-[11px] font-mono text-center">
+        <div className="flex items-center gap-1 text-slate-400">
+          <span className="font-sans text-slate-500 text-[10px]">Peak</span>
           <span className="text-zinc-200 font-semibold">
             {(metrics.peakScore * 100).toFixed(0)}%
           </span>
         </div>
-        <div className="flex items-center gap-1 text-zinc-400">
-          <span className="font-sans text-zinc-500 text-[10px]">Zone</span>
+        <div className="flex items-center gap-1 text-slate-400">
+          <span className="font-sans text-slate-500 text-[10px]">Zone</span>
           <span className="text-zinc-200 font-semibold">
             {metrics.peakZone}
           </span>
         </div>
-        <div className="flex items-center gap-1 text-zinc-400">
-          <span className="font-sans text-zinc-500 text-[10px]">Mean</span>
+        <div className="flex items-center gap-1 text-slate-400">
+          <span className="font-sans text-slate-500 text-[10px]">Mean</span>
           <span className="text-zinc-200 font-semibold">
             {(metrics.meanScore * 100).toFixed(1)}%
           </span>
         </div>
-        <div className="flex items-center gap-1 text-zinc-400">
-          <span className="font-sans text-zinc-500 text-[10px]">Area</span>
+        <div className="flex items-center gap-1 text-slate-400">
+          <span className="font-sans text-slate-500 text-[10px]">Area</span>
           <span className="text-zinc-200 font-semibold">
             {metrics.suspectPct.toFixed(0)}%
           </span>

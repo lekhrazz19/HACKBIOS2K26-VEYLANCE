@@ -8,7 +8,7 @@
 
   body {
     font-family: var(--font-sans);
-    background-color: #09090b; /* zinc-950 */
+    background-color: #0c0e12; /* enterprise dark palette */
     color: #f4f4f5; /* zinc-100 */
     overflow-x: hidden;
   }
@@ -16,6 +16,17 @@
   code, pre, kbd, samp {
     font-family: var(--font-mono);
   }
+}
+
+/* Enterprise Surface Tokens */
+.surface-panel {
+  background-color: rgba(18, 21, 28, 0.7);
+  border: 1px solid rgba(34, 39, 52, 0.85);
+}
+
+.surface-inset {
+  background-color: #181c26;
+  border: 1px solid rgba(34, 39, 52, 0.6);
 }
 
 /* Restrained Workstation Utilities */
