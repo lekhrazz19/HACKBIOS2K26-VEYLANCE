@@ -29,8 +29,10 @@ export function useWebSocket(): UseWebSocketResult {
     try {
       const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
       let wsUrl = '';
-      if (import.meta.env.DEV) {
-        wsUrl = 'ws://localhost:5173/ws';
+      if (import.meta.env.VITE_WS_URL) {
+        wsUrl = import.meta.env.VITE_WS_URL;
+      } else if (import.meta.env.DEV) {
+        wsUrl = `${protocol}//${window.location.host}/ws`;
       } else {
         wsUrl = `${protocol}//${window.location.host}/ws`;
       }
